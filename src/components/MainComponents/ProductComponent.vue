@@ -52,7 +52,7 @@ export default {
   transition: box-shadow 0.2s ease-in;
 }
 .price-container {
-  display: -webkit-inline-box;
+  display: -webkit-box;
 }
 .discounted-price {
   padding-right: 25px;

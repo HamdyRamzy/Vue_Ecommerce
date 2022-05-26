@@ -12,12 +12,15 @@
         />
       </div>
     </form>
-    <div class="row" v-if="products">
+    <div class="row" v-if="products.length">
       <ProductComponent
         v-for="product in products"
         v-bind:key="product.id"
         v-bind:product="product"
       />
+    </div>
+    <div>
+      <p class="mb-0 mt-5">{{ res }}</p>
     </div>
   </div>
 </template>
@@ -37,6 +40,7 @@ export default {
       currentPage: 1,
       hasNext: true,
       query: "",
+      res: "",
     };
   },
   mounted() {
@@ -46,6 +50,7 @@ export default {
     if (params.get("query")) {
       this.query = params.get("query");
       this.performSearch();
+      console.log("run");
       window.onscroll = () => {
         let bottomOfWindow =
           document.documentElement.scrollTop + window.innerHeight ===
@@ -69,6 +74,8 @@ export default {
           this.hasNext = false;
           if (response.data.next) {
             this.hasNext = true;
+          } else {
+            this.res = "NO MORE SEARCH RESULTS FOUND";
           }
           for (let i = 0; i < response.data.results.length; i++) {
             this.products.push(response.data.results[i]);

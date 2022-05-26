@@ -1,29 +1,5 @@
 <template>
   <div class="home container">
-    <form method="get">
-      <div class="input-group input-group-lg mt-5 search-container">
-        <input
-          type="text"
-          class="form-control shadow-none"
-          placeholder="What are looking for ?"
-          aria-label="Recipient's username"
-          aria-describedby="basic-addon2"
-          name="query"
-        />
-      </div>
-    </form>
-    <form @submit.prevent="performSearch">
-      <div class="form-check">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          :id="sweat0"
-          :value="sweat"
-          v-model="categories"
-        />
-      </div>
-    </form>
-
     <div class="row" v-if="products.length">
       <ProductComponent
         v-for="product in products"
@@ -31,9 +7,8 @@
         v-bind:product="product"
       />
     </div>
-    <div v-else>
-      <p class="mb-0 mt-5">NO SEARCH RESULTS FOUND</p>
-      <small>NO RESULTS FOUND FOR THE SEARCH: "{{ query }}"</small>
+    <div>
+      <p class="mb-0 mt-5">{{ res }}</p>
     </div>
   </div>
 </template>
@@ -43,7 +18,7 @@ import axios from "axios";
 import ProductComponent from "@/components/MainComponents/ProductComponent.vue";
 
 export default {
-  name: "SearchView",
+  name: "SearchResultsView",
   components: {
     ProductComponent,
   },
@@ -53,11 +28,10 @@ export default {
       currentPage: 1,
       hasNext: true,
       query: "",
-      categories: "",
+      res: "",
     };
   },
   mounted() {
-    this.performSearch();
     document.title = "Search";
     let uri = window.location.search.substring(1);
     let params = new URLSearchParams(uri);
@@ -65,37 +39,31 @@ export default {
       this.query = params.get("query");
       this.performSearch();
       console.log("run");
+      window.onscroll = () => {
+        let bottomOfWindow =
+          document.documentElement.scrollTop + window.innerHeight ===
+          document.documentElement.offsetHeight;
+        if (bottomOfWindow && this.hasNext) {
+          this.currentPage += 1;
+          this.performSearch();
+        }
+      };
     }
-    window.onscroll = () => {
-      let bottomOfWindow =
-        document.documentElement.scrollTop + window.innerHeight ===
-        document.documentElement.offsetHeight;
-      if (bottomOfWindow && this.hasNext) {
-        this.currentPage += 1;
-        this.performSearch();
-      }
-    };
-  },
-  watch: {
-    categories: {
-      handler: function () {
-        this.performSearch();
-      },
-      deep: true,
-    },
   },
   methods: {
     async performSearch() {
       this.$store.commit("setIsLoading", true);
       await axios
         .post(`/api/v1/products/search/?page=${this.currentPage}`, {
-          query: this.categories,
+          query: this.query,
         })
         .then((response) => {
           document.title = `Search - ${this.query}`;
           this.hasNext = false;
           if (response.data.next) {
             this.hasNext = true;
+          } else {
+            this.res = "NO RESULTS FOUND";
           }
           for (let i = 0; i < response.data.results.length; i++) {
             this.products.push(response.data.results[i]);

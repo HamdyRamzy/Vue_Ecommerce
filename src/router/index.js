@@ -6,6 +6,8 @@ import SignupView from "../views/AuthenticationViews/SignupView.vue";
 
 import CartView from "../views/GlobalViews/CartView.vue";
 import SearchView from "../views/GlobalViews/SearchView.vue";
+import SearchResultsView from "../views/GlobalViews/SearchResultsView.vue";
+
 import AccountView from "../views/GlobalViews/AccountView.vue";
 
 import ProductDetailView from "../views/GlobalViews/ProductDetailView";
@@ -40,6 +42,11 @@ const routes = [
     path: "/search",
     name: "search",
     component: SearchView,
+  },
+  {
+    path: "/search-results",
+    name: "search-results",
+    component: SearchResultsView,
   },
 
   {

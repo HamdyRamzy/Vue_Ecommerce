@@ -47,8 +47,11 @@ export default {
         .get(`/api/v1/latest-products/?page=${this.currentPage}`)
         .then((response) => {
           this.hasNext = false;
+          console.log(this.currentPage);
+
           if (response.data.next) {
             this.hasNext = true;
+            console.log(this.currentPage);
           }
           for (let i = 0; i < response.data.results.length; i++) {
             this.Products.push(response.data.results[i]);
@@ -62,3 +65,8 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+.no-products {
+  color: #e60000;
+}
+</style>

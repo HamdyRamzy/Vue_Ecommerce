@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "vue-inner-image-zoom/lib/vue-inner-image-zoom.css";
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";

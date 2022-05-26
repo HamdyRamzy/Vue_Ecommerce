@@ -111,14 +111,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
-
 html,
 body {
-  padding: 0 !important;
-  margin: 0;
-  max-width: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px !important;
   overflow-x: hidden;
-  scroll-behavior: smooth;
 }
 h1,
 h2,
@@ -140,12 +138,6 @@ textarea,
 small {
   color: #000;
   font-family: "Mochiy Pop P One", sans-serif;
-}
-.loader-container {
-  z-index: 2;
-  position: absolute;
-  left: 650px;
-  top: 238px;
 }
 .top-btn {
   position: fixed;
