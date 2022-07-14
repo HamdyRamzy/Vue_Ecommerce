@@ -8,7 +8,8 @@
               v-for="item in toBeShown"
               v-bind:key="item.product.id"
               v-bind:initialItem="item"
-              v-on:removeFromCart="removeFromCart"
+              @openModal="showModal"
+              @removeFromCart="removeFromCart"
             />
             <button
               class="btn btn-dark shadow-none"
@@ -32,7 +33,13 @@
           :cartTotalPrice="cartTotalPrice"
           :cartTotalLength="cartTotalLength"
         />
+        <CartDiscountComponent
+          class="mt-4"
+          v-on:checkCoupon="checkCoupon"
+          :coupon_value="coupon_value"
+        />
       </div>
+      <h1>{{ coupon.value }}</h1>
     </div>
     <div class="cart-container mt-5" v-else>
       <svg
@@ -59,22 +66,44 @@
 // @ is an alias to /src
 import CartPriceComponent from "@/components/CartComponents/CartPriceComponent.vue";
 import CartProductComponent from "@/components/CartComponents/CartProductComponent.vue";
-
+import CartDiscountComponent from "@/components/CartComponents/CartDiscountComponent.vue";
+import DeleteProductComponent from "@/components/CartComponents/DeleteProductComponent.vue";
+import axios from "axios";
 export default {
   name: "CartView",
   components: {
     CartPriceComponent,
     CartProductComponent,
+    CartDiscountComponent,
   },
   data() {
     return {
       cart: {
         items: [],
       },
+      isOpen: false,
       currentPage: 1,
+      coupon: {},
+      coupon_value: 0,
     };
   },
   methods: {
+    async showModal(item) {
+      // once this library is installed. it will add a $vbsModal global property to the app instance.
+      const confirmed = await this.$vbsModal.open({
+        content: DeleteProductComponent,
+        contentProps: {
+          initialItem: item,
+        },
+        center: true, // default is false.
+        backgroundScrolling: false, // default is false.
+        staticBackdrop: false, // will disable backdrop click to close modal if true.
+      });
+      return confirmed;
+    },
+    setIsOpen(value) {
+      this.isOpen = value;
+    },
     nextPage() {
       if (this.currentPage < this.totalPages) this.currentPage++;
     },
@@ -86,9 +115,31 @@ export default {
         (i) => i.product.id !== item.product.id
       );
     },
+    async checkCoupon(coupon_code) {
+      this.$store.commit("setIsLoading", true);
+      await axios
+        .post(`/api/v3/coupon/?coupon_code=${coupon_code}`)
+        .then((response) => {
+          this.coupon = response.data;
+          this.$store.state.coupon = this.coupon.code;
+          if (response.data.value) {
+            this.coupon_value = parseInt(response.data.value);
+            this.$store.state.coupon_value = parseInt(response.data.value);
+          } else {
+            this.coupon_value = 0;
+          }
+          console.log(this.coupon);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.$store.commit("setIsLoading", false);
+    },
   },
   mounted() {
+    document.title = "Cart";
     this.cart = this.$store.state.cart;
+    console.log(this.$store.state.code_no);
   },
   computed: {
     cartTotalLength() {
@@ -97,9 +148,21 @@ export default {
       }, 0);
     },
     cartTotalPrice() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return (acc += curVal.product.price * curVal.quantity);
-      }, 0);
+      if (this.coupon_value > 0) {
+        return (
+          this.cart.items.reduce((acc, curVal) => {
+            return (acc += curVal.product.price * curVal.quantity);
+          }, 0) -
+          this.cart.items.reduce((acc, curVal) => {
+            return (acc += curVal.product.price * curVal.quantity);
+          }, 0) *
+            (parseInt(this.coupon_value) / 100)
+        );
+      } else {
+        return this.cart.items.reduce((acc, curVal) => {
+          return (acc += curVal.product.price * curVal.quantity);
+        }, 0);
+      }
     },
     toBeShown() {
       return this.cart.items.slice(0, this.currentPage * 2);

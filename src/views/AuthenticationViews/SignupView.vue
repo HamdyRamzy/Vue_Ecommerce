@@ -82,8 +82,8 @@
                   </div>
                 </div>
               </div>
-              <button class="btn btn-dark w-100 mt-2" type="submit">
-                Submit form
+              <button class="btn btn-dark w-100 mt-2 shadow-none">
+                SIGN UP
               </button>
             </form>
           </div>
@@ -119,6 +119,13 @@ export default {
       passwordServerErrorMessage: "",
       password2ServerErrorMessage: "",
     };
+  },
+  mounted() {
+    document.title = "Sign up";
+    if (this.$store.state.isAuthenticated) {
+      const toPath = this.$route.query.to || "/";
+      this.$router.push(toPath);
+    }
   },
   methods: {
     submitForm() {
@@ -217,7 +224,7 @@ export default {
   padding: 8px;
 }
 .card {
-  background-color: #fafafa;
+  background-color: #fafafa38;
   padding: 15px;
 }
 </style>

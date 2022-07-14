@@ -30,6 +30,7 @@ export default {
     ProductComponent,
   },
   mounted() {
+    document.title = "Shoesy";
     this.getItem();
     window.onscroll = () => {
       let bottomOfWindow =
@@ -56,6 +57,8 @@ export default {
           `/api/v1/${category_slug}/${section_slug}/${item_slug}/?page=${this.currentPage}`
         )
         .then((response) => {
+          document.title = `Shoesy ${this.item}`;
+
           this.hasNext = false;
           if (response.data.next) {
             this.hasNext = true;

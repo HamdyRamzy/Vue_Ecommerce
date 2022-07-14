@@ -59,7 +59,7 @@
             </div>
           </div>
         </div>
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" v-if="$store.state.isAuthenticated">
           <li class="nav-item">
             <router-link class="nav-link" to="/login">Login</router-link>
           </li>
@@ -69,6 +69,7 @@
             >
           </li>
         </ul>
+        <p v-else>sdfsdf</p>
       </div>
     </div>
     <nav class="navbar navbar-expand-lg navbar-light p-3">
@@ -146,7 +147,7 @@
               </div>
             </li>
           </ul>
-          <ul class="navbar-nav">
+          <ul class="navbar-nav" v-if="!$store.state.isAuthenticated">
             <li class="nav-item">
               <router-link class="nav-link" to="/login">Login</router-link>
             </li>
@@ -156,25 +157,84 @@
               >
             </li>
           </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  fill="currentColor"
+                  class="bi bi-person"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+                  />
+                </svg>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown"
+              >
+                <ul
+                  class="list-group list-group-flush"
+                  v-if="$store.state.isAuthenticated"
+                >
+                  <li class="list-group-item">
+                    <router-link to="/account" class="text-decoration-none">
+                      <a class="dropdown-item disabled text-dark" href="#"
+                        >My Account</a
+                      >
+                    </router-link>
+                  </li>
+                  <li class="list-group-item">
+                    <router-link to="/orders" class="text-decoration-none">
+                      <a class="dropdown-item disabled text-dark" href="#"
+                        >My Orders</a
+                      >
+                    </router-link>
+                  </li>
+                  <li class="list-group-item border-bottom-0">
+                    <router-link to="/ratings" class="text-decoration-none">
+                      <a class="dropdown-item disabled text-dark" href="#"
+                        >My Ratings</a
+                      >
+                    </router-link>
+                  </li>
+                  <button
+                    @click="logout()"
+                    class="btn btn-dark mt-2 shadow-none"
+                  >
+                    Log out
+                  </button>
+                </ul>
+                <div v-else>
+                  <router-link to="/login" class="text-decoration-none">
+                    <button class="btn btn-dark mt-2 shadow-none w-100">
+                      Log in
+                    </button>
+                  </router-link>
+                  <small>
+                    Not a Member?
+                    <router-link to="/signup" class="text-decoration-none">
+                      Register
+                    </router-link>
+                  </small>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
 
         <ul class="navbar-nav inline ml-nav-auto">
-          <li class="nav-item">
-            <router-link class="nav-link p-2" to="/account">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="22"
-                height="22"
-                fill="currentColor"
-                class="bi bi-person"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
-                />
-              </svg>
-            </router-link>
-          </li>
           <li class="nav-item">
             <router-link class="nav-link p-2" to="/search">
               <svg
@@ -195,14 +255,14 @@
             <router-link class="nav-link p-2 position-relative" to="/cart">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="17"
-                height="17"
+                width="18"
+                height="18"
                 fill="currentColor"
-                class="bi bi-cart"
+                class="bi bi-cart4"
                 viewBox="0 0 16 16"
               >
                 <path
-                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                  d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"
                 />
               </svg>
               <span
@@ -219,9 +279,24 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   name: "NavbarComponent",
   props: ["categories", "cartTotalLength"],
+  methods: {
+    logout() {
+      axios.defaults.headers.common["Authorization"] = "";
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("userid");
+
+      this.$store.commit("removeToken");
+
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -268,5 +343,12 @@ hr {
 .cart-bill {
   left: 26px !important;
   top: 7px !important;
+}
+.btn {
+  border-radius: 0;
+  padding: 8px;
+}
+.dropdown-menu {
+  padding: 7px;
 }
 </style>

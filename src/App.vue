@@ -65,10 +65,15 @@ export default {
   },
   beforeCreate() {
     this.$store.commit("initializeStore");
+    const token = this.$store.state.token;
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = "Token " + token;
+    } else {
+      axios.defaults.headers.common["Authorization"] = "";
+    }
   },
   methods: {
     async getCategories() {
-      this.$store.commit("setIsLoading", true);
       await axios
         .get("/api/v1/categories/all/")
         .then((response) => {
@@ -77,7 +82,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      this.$store.commit("setIsLoading", false);
     },
     handleScroll: function () {
       if (this.scTimer) return;

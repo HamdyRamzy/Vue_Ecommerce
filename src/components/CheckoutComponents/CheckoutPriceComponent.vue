@@ -35,11 +35,6 @@
                 </ul>
               </div>
             </div>
-            <router-link to="/checkout" class="text-decoration-none">
-              <button class="btn btn-dark shadow-none w-100">
-                COMPLETE ORDER
-              </button>
-            </router-link>
           </div>
         </div>
       </div>
@@ -48,7 +43,7 @@
 </template>
 <script>
 export default {
-  name: "CartPriceComponent",
+  name: "CheckoutPriceComponent",
   props: ["cartTotalLength", "cartTotalPrice"],
 };
 </script>

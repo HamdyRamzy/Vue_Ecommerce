@@ -1,3 +1,5 @@
+import store from "../store";
+
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/GlobalViews/HomeView.vue";
 
@@ -5,10 +7,15 @@ import LoginView from "../views/AuthenticationViews/LoginView.vue";
 import SignupView from "../views/AuthenticationViews/SignupView.vue";
 
 import CartView from "../views/GlobalViews/CartView.vue";
+import CheckoutView from "../views/GlobalViews/CheckoutView.vue";
+
 import SearchView from "../views/GlobalViews/SearchView.vue";
 import SearchResultsView from "../views/GlobalViews/SearchResultsView.vue";
 
-import AccountView from "../views/GlobalViews/AccountView.vue";
+import MyAccountView from "../views/GlobalViews/MyAccountView.vue";
+import MyOrdersView from "../views/GlobalViews/MyOrdersView.vue";
+import MyRatingsView from "../views/GlobalViews/MyRatingsView.vue";
+import successView from "../views/GlobalViews/SuccessView.vue";
 
 import ProductDetailView from "../views/GlobalViews/ProductDetailView";
 
@@ -21,22 +28,43 @@ const routes = [
     name: "home",
     component: HomeView,
   },
-
   {
     path: "/login",
     name: "login",
     component: LoginView,
+    meta: {
+      alreadyLogged: true,
+    },
   },
   {
     path: "/signup",
     name: "signup",
     component: SignupView,
+    meta: {
+      alreadyLogged: true,
+    },
   },
 
   {
     path: "/cart",
     name: "cart",
     component: CartView,
+  },
+  {
+    path: "/checkout",
+    name: "checkout",
+    component: CheckoutView,
+    meta: {
+      requireLogin: true,
+    },
+  },
+  {
+    path: "/success/:order_no",
+    name: "success",
+    component: successView,
+    meta: {
+      requireLogin: true,
+    },
   },
   {
     path: "/search",
@@ -50,11 +78,29 @@ const routes = [
   },
 
   {
-    path: "/Account",
+    path: "/account",
     name: "account",
-    component: AccountView,
+    component: MyAccountView,
+    meta: {
+      requireLogin: true,
+    },
   },
-
+  {
+    path: "/orders",
+    name: "orders",
+    component: MyOrdersView,
+    meta: {
+      requireLogin: true,
+    },
+  },
+  {
+    path: "/ratings",
+    name: "ratings",
+    component: MyRatingsView,
+    meta: {
+      requireLogin: true,
+    },
+  },
   {
     path: "/about",
     name: "about",
@@ -88,6 +134,26 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+router.beforeEach((to, from, next) => {
+  if (
+    to.matched.some((record) => record.meta.requireLogin) &&
+    !store.state.isAuthenticated
+  ) {
+    next({ name: "login", query: { to: to.path } });
+  } else {
+    next();
+  }
+});
+router.beforeEach((to, from, next) => {
+  if (
+    to.matched.some((record) => record.meta.alreadyLogged) &&
+    store.state.isAuthenticated
+  ) {
+    next({ name: "home", query: { to: to.path } });
+  } else {
+    next();
+  }
 });
 
 export default router;

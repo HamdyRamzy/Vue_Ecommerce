@@ -1,7 +1,7 @@
 <template>
   <div class="home container">
     <form method="get">
-      <div class="input-group input-group-lg mt-5 search-container">
+      <div class="input-group-lg mt-5 mb-2 search-container">
         <input
           type="text"
           class="form-control shadow-none"
@@ -9,6 +9,7 @@
           aria-label="Recipient's username"
           aria-describedby="basic-addon2"
           name="query"
+          autofocus
         />
       </div>
     </form>
@@ -72,10 +73,14 @@ export default {
         .then((response) => {
           document.title = `Search - ${this.query}`;
           this.hasNext = false;
-          if (response.data.next) {
-            this.hasNext = true;
+          if (response.data == null) {
+            this.res = "NO MORE SEARCH sdsdsdssRESULTS FOUND";
           } else {
-            this.res = "NO MORE SEARCH RESULTS FOUND";
+            if (response.data.next) {
+              this.hasNext = true;
+            } else {
+              this.res = "NO MORE SEARCH RESULTS FOUND";
+            }
           }
           for (let i = 0; i < response.data.results.length; i++) {
             this.products.push(response.data.results[i]);
@@ -89,4 +94,12 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+.input-group-lg {
+  border-bottom: 1px solid #9da2a8;
+}
+input[type="text"] {
+  border: none;
+  font-size: 30px;
+}
+</style>

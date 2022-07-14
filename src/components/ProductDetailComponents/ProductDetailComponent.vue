@@ -3,6 +3,7 @@
     <div class="row g-0">
       <div class="col-md-6">
         <inner-image-zoom
+          v-if="vpicture ? vpicture : product.get_image"
           :src="vpicture ? vpicture : product.get_image"
           :alt="product.name"
           :zoomScale="1.5"
@@ -40,6 +41,14 @@
       <div class="col-md-6">
         <div class="card-body">
           <h5 class="card-title">{{ product.name }}</h5>
+          <star-rating
+            :rating="parseInt(product.rating)"
+            :increment="0.5"
+            :star-size="25"
+            :read-only="true"
+            :show-rating="false"
+            class="mb-2"
+          ></star-rating>
           <small class="d-block text-muted"
             >Model Number : {{ product.code }}</small
           >
@@ -64,7 +73,7 @@
                 d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"
               />
             </svg>
-            <span class="bolder">in stock</span>
+            <span class="text-success">in stock</span>
           </small>
           <small class="d-block" v-if="!product.in_stock"
             >Availability:
@@ -81,7 +90,7 @@
                 d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
               />
             </svg>
-            <span class="bolder">out of stock</span>
+            <span class="text-danger">out of stock</span>
           </small>
 
           <p class="card-text">
@@ -144,12 +153,14 @@
 <script>
 import { Toast } from "bootstrap/dist/js/bootstrap";
 import InnerImageZoom from "vue-inner-image-zoom";
+import StarRating from "vue-star-rating";
 
 export default {
   name: "ProductDetailComponent",
   props: ["product"],
   components: {
     "inner-image-zoom": InnerImageZoom,
+    StarRating,
   },
   data() {
     return {
